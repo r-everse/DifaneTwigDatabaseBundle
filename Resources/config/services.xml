@@ -20,12 +20,9 @@
         </service>
 
         <service id="difane.bundle.twigdatabase.twig.loader.chain" class="%difane.bundle.twigdatabase.twig.loader.chain.class%">
-            <call method="addLoader">
-                 <argument type="service" id="twig.loader" />
-            </call>
-            <call method="addLoader">
-                 <argument type="service" id="difane.bundle.twigdatabase.twig.loader.database" />
-            </call>
+            <argument type="collection">
+                <argument type="service" id="difane.bundle.twigdatabase.twig.loader.database" />
+            </argument>
         </service>
 
         <service id="difane.bundle.twigdatabase.database.tablename.subscriber" class="%difane.bundle.twigdatabase.database.tablename.subscriber.class%">
