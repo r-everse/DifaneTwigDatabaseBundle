@@ -19,11 +19,7 @@
             <argument>%difane.bundle.twigdatabase.twig.loader.database.autocreatetemplates%</argument>
         </service>
 
-        <service id="difane.bundle.twigdatabase.twig.loader.chain" class="%difane.bundle.twigdatabase.twig.loader.chain.class%">
-            <argument type="collection">
-                <argument type="service" id="difane.bundle.twigdatabase.twig.loader.database" />
-            </argument>
-        </service>
+        <service id="difane.bundle.twigdatabase.twig.loader.chain" class="%difane.bundle.twigdatabase.twig.loader.chain.class%" />
 
         <service id="difane.bundle.twigdatabase.database.tablename.subscriber" class="%difane.bundle.twigdatabase.database.tablename.subscriber.class%">
             <argument>%difane.bundle.twigdatabase.database.tablename%</argument>

@@ -18,9 +18,9 @@ class TwigPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         $loader = $container->getDefinition('twig.loader');
-
+        $dbLoader = $container->getDefinition('difane.bundle.twigdatabase.twig.loader.database');
         $customLoader = $container->getDefinition('difane.bundle.twigdatabase.twig.loader.chain');
-        $customLoader->addMethodCall('addLoader', array($loader));
+        $customLoader->addMethodCall('addLoader', array($loader, $dbLoader));
         $container->setDefinition('twig.loader', $customLoader);
     }
 }
