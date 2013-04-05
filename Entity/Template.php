@@ -4,6 +4,7 @@ namespace Difane\Bundle\TwigDatabaseBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Difane\Bundle\TwigDatabaseBundle\Validator\Constraints as DifaneAssert;
 
 /**
  * @ORM\Table(name="difane_twig_database_template")
@@ -27,6 +28,7 @@ class Template
 
     /**
      * @ORM\Column(type="text")
+     * @DifaneAssert\ValidTwig
      */
     protected $content;
 
