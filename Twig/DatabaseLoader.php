@@ -2,6 +2,7 @@
 
 namespace Difane\Bundle\TwigDatabaseBundle\Twig;
 
+use Doctrine\DBAL\DBALException;
 use Twig_LoaderInterface;
 use Twig_Error_Loader;
 
@@ -19,29 +20,28 @@ class DatabaseLoader implements Twig_LoaderInterface
     }
 
     public function getSource($name)
-    {        
-        $this->logger->debug("DatabaseLoader::getSource() called with parameters[name: ".$name."]");
+    {
+        try {
+            $this->logger->debug("DatabaseLoader::getSource() called with parameters[name: " . $name . "]");
 
-        $template = $this->entityManager->getRepository('DifaneTwigDatabaseBundle:Template')->getTemplate($name);
+            $template = $this->entityManager->getRepository('DifaneTwigDatabaseBundle:Template')->getTemplate($name);
 
-        if($template instanceof \Difane\Bundle\TwigDatabaseBundle\Entity\Template)
-        {
-            $this->logger->debug("DatabaseLoader::getSource() Template was found. Returning its content.");
-            return $template->getContent();
-        }
-        else
-        {
-            $this->logger->debug("DatabaseLoader::getSource() Template was not found. Trying to create it.");
-            $newTemplate = $this->tryCreateTemplate($name);
-            if(true == is_null($newTemplate))
-            {
-                throw new Twig_Error_Loader(sprintf('TwigDatabase: Unable to find template "%s".', $name));
+            if ($template instanceof \Difane\Bundle\TwigDatabaseBundle\Entity\Template) {
+                $this->logger->debug("DatabaseLoader::getSource() Template was found. Returning its content.");
+                return $template->getContent();
+            } else {
+                $this->logger->debug("DatabaseLoader::getSource() Template was not found. Trying to create it.");
+                $newTemplate = $this->tryCreateTemplate($name);
+                if (true == is_null($newTemplate)) {
+                    throw new Twig_Error_Loader(sprintf('TwigDatabase: Unable to find template "%s".', $name));
+                } else {
+                    return $newTemplate->getContent();
+                }
             }
-            else
-            {
-                return $newTemplate->getContent();
-            }
+        } catch (DBALException $e) {
+            throw new Twig_Error_Loader(sprintf('TwigDatabase: Unable to find template "%s".', $name));
         }
+
     }
 
     public function isFresh($name, $time)
