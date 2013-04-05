@@ -24,6 +24,7 @@ class DifaneTwigDatabaseExtension extends Extension
 
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
+        $loader->load('assert.xml');
 
         $container->setParameter('difane.bundle.twigdatabase.twig.loader.database.autocreatetemplates', $config['auto_create_templates']);
         $container->setParameter('difane.bundle.twigdatabase.database.tablename', $config['table_name']);
