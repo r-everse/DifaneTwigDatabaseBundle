@@ -72,8 +72,9 @@ class DatabaseLoader implements Twig_LoaderInterface
     public function getCacheKey($name)
     {
         $this->logger->debug("DatabaseLoader::getCacheKey() called with parameters[name: ".$name."]");
-        
-        return "twig:db:".$name;
+        $templateTimestamp = $this->entityManager->getRepository('DifaneTwigDatabaseBundle:Template')->getTemplateTimestamp($name);
+
+        return "twig:db:" . $name . ':' . $templateTimestamp;
     }
 
     private function tryCreateTemplate($name)
