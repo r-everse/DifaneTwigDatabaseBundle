@@ -46,24 +46,22 @@ class DatabaseLoader implements Twig_LoaderInterface
 
     public function isFresh($name, $time)
     {
-        $this->logger->debug("DatabaseLoader::isFresh() called with parameters[name: ".$name.", time:".$time."]");
+        $this->logger->debug(
+            "DatabaseLoader::isFresh() called with parameters[name: " . $name . ", time:" . $time . "]"
+        );
 
-        $templateTimestamp = $this->entityManager->getRepository('DifaneTwigDatabaseBundle:Template')->getTemplateTimestamp($name);
+        $templateTimestamp = $this->entityManager->getRepository(
+            'DifaneTwigDatabaseBundle:Template'
+        )->getTemplateTimestamp($name);
 
-        if(false == is_null($templateTimestamp))
-        {
+        if (false == is_null($templateTimestamp)) {
             $this->logger->debug("DatabaseLoader::isFresh() Template was found. Returning its fresh status");
-            return  ($templateTimestamp <= $time);
-        }
-        else
-        {
+            return ($templateTimestamp <= $time);
+        } else {
             $this->logger->debug("DatabaseLoader::isFresh() Template was not found. Trying to create it.");
-            if(true == is_null($this->tryCreateTemplate($name)))
-            {
+            if (true == is_null($this->tryCreateTemplate($name))) {
                 throw new Twig_Error_Loader(sprintf('TwigDatabase: Unable to find template "%s".', $name));
-            }
-            else
-            {
+            } else {
                 return false;
             }
         }
@@ -71,27 +69,32 @@ class DatabaseLoader implements Twig_LoaderInterface
 
     public function getCacheKey($name)
     {
-        $this->logger->debug("DatabaseLoader::getCacheKey() called with parameters[name: ".$name."]");
-        $templateTimestamp = $this->entityManager->getRepository('DifaneTwigDatabaseBundle:Template')->getTemplateTimestamp($name);
+        $this->logger->debug("DatabaseLoader::getCacheKey() called with parameters[name: " . $name . "]");
 
-        return "twig:db:" . $name . ':' . $templateTimestamp;
+        try {
+            $templateTimestamp = $this->entityManager->getRepository(
+                'DifaneTwigDatabaseBundle:Template'
+            )->getTemplateTimestamp($name);
+        } catch (DBALException $e) {
+            $templateTimestamp = 0;
+        }
+        return "twig:db:" . $name . $templateTimestamp;
     }
 
     private function tryCreateTemplate($name)
     {
-        if( false == $this->autoCreateTemplates ) return null;
+        if (false == $this->autoCreateTemplates) {
+            return null;
+        }
 
-        try
-        {
+        try {
             $template = new \Difane\Bundle\TwigDatabaseBundle\Entity\Template();
             $template->setName($name);
             $template->setContent("{% for i in range(0, 3) %} Lorem ipsum dolor sit amet. {% endfor %}");
             $this->entityManager->persist($template);
             $this->entityManager->flush();
             return $template;
-        }
-        catch(\Exception $ex)
-        {
+        } catch (\Exception $ex) {
             return null;
         }
     }
