@@ -20,8 +20,8 @@ class TwigPass implements CompilerPassInterface
         $loader = $container->getDefinition('twig.loader');
         $dbLoader = $container->getDefinition('difane.bundle.twigdatabase.twig.loader.database');
         $customLoader = $container->getDefinition('difane.bundle.twigdatabase.twig.loader.chain');
-        $customLoader->addMethodCall('addLoader', array($loader));
         $customLoader->addMethodCall('addLoader', array($dbLoader));
+        $customLoader->addMethodCall('addLoader', array($loader));
         $container->setDefinition('twig.loader', $customLoader);
     }
 }
