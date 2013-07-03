@@ -22,6 +22,10 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+                ->arrayNode('loaders_priority')
+                    ->defaultValue(array('difane.bundle.twigdatabase.twig.loader.filesystem', 'difane.bundle.twigdatabase.twig.loader.database'))
+                    ->prototype('scalar')->end()
+                ->end()
                 ->scalarNode('table_name')->defaultValue('difane_twig_database_template')->end()
                 ->booleanNode('auto_create_templates')->defaultFalse()->end()
                 ->arrayNode('sonata_admin')

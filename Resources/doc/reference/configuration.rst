@@ -17,6 +17,7 @@ Full Configuration Options
 .. code-block:: yaml
 
     difane_twig_database:
+        loaders_priority: []                        # Loaders passed to chain loader. Loaders will be loaded in the defined order
         table_name: "MyTwigTable"                   # Default is 'difane_twig_database_template'
         auto_create_templates: true                 # Default is false
         sonata_admin:

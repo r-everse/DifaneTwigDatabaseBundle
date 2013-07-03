@@ -17,11 +17,24 @@ class TwigPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $loader = $container->getDefinition('twig.loader');
-        $dbLoader = $container->getDefinition('difane.bundle.twigdatabase.twig.loader.database');
-        $customLoader = $container->getDefinition('difane.bundle.twigdatabase.twig.loader.chain');
-        $customLoader->addMethodCall('addLoader', array($dbLoader));
-        $customLoader->addMethodCall('addLoader', array($loader));
-        $container->setDefinition('twig.loader', $customLoader);
+        $chainLoader = $container->getDefinition('difane.bundle.twigdatabase.twig.loader.chain');
+        $loaders = $this->getPrioritizedLoaders($container);
+
+        foreach ($loaders as $chainedLoader) {
+            $chainLoader->addMethodCall('addLoader', array($container->findDefinition($chainedLoader)));
+        }
+
+        $container->setDefinition('twig.loader', $chainLoader);
+    }
+
+    protected function getPrioritizedLoaders(ContainerBuilder $container)
+    {
+        $loaders = $container->getParameter('difane.bundle.loaders_priority');
+
+        if (empty($loaders)) {
+            $loaders = array($container->getDefinition('twig.loader'));
+        }
+
+        return $loaders;
     }
 }
