@@ -13,6 +13,7 @@
     </parameters>
 
     <services>
+        <service id="difane.bundle.twigdatabase.twig.loader.filesystem" alias="twig.loader.filesystem" />
         <service id="difane.bundle.twigdatabase.twig.loader.database" class="%difane.bundle.twigdatabase.twig.loader.database.class%">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="logger" />
