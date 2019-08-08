@@ -3,10 +3,11 @@
 namespace Difane\Bundle\TwigDatabaseBundle\Twig;
 
 use Doctrine\DBAL\DBALException;
-use Twig_LoaderInterface;
-use Twig_Error_Loader;
+use Twig\Error\LoaderError;
+use Twig\Loader\LoaderInterface;
+use Twig\Source;
 
-class DatabaseLoader implements Twig_LoaderInterface
+class DatabaseLoader implements LoaderInterface
 {
     private $entityManager;
     private $logger;
@@ -33,13 +34,13 @@ class DatabaseLoader implements Twig_LoaderInterface
                 $this->logger->debug("DatabaseLoader::getSource() Template was not found. Trying to create it.");
                 $newTemplate = $this->tryCreateTemplate($name);
                 if (true == is_null($newTemplate)) {
-                    throw new Twig_Error_Loader(sprintf('TwigDatabase: Unable to find template "%s".', $name));
+                    throw new LoaderError(sprintf('TwigDatabase: Unable to find template "%s".', $name));
                 } else {
                     return $newTemplate->getContent();
                 }
             }
         } catch (DBALException $e) {
-            throw new Twig_Error_Loader(sprintf('TwigDatabase: Unable to find template "%s".', $name));
+            throw new LoaderError(sprintf('TwigDatabase: Unable to find template "%s".', $name));
         }
 
     }
@@ -60,7 +61,7 @@ class DatabaseLoader implements Twig_LoaderInterface
         } else {
             $this->logger->debug("DatabaseLoader::isFresh() Template was not found. Trying to create it.");
             if (true == is_null($this->tryCreateTemplate($name))) {
-                throw new Twig_Error_Loader(sprintf('TwigDatabase: Unable to find template "%s".', $name));
+                throw new LoaderError(sprintf('TwigDatabase: Unable to find template "%s".', $name));
             } else {
                 return false;
             }
@@ -97,5 +98,19 @@ class DatabaseLoader implements Twig_LoaderInterface
         } catch (\Exception $ex) {
             return null;
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSourceContext($name)
+    {
+        return new Source($name, $name);
+    }
+
+
+    public function exists($name)
+    {
+        return $this->entityManager->getRepository('DifaneTwigDatabaseBundle:Template')->getTemplate($name) !== null;
     }
 }
