@@ -105,9 +105,8 @@ class DatabaseLoader implements LoaderInterface
      */
     public function getSourceContext($name)
     {
-        return new Source($name, $name);
+        return new Source($this->getSource($name), $name);
     }
-
 
     public function exists($name)
     {
