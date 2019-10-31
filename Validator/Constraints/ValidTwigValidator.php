@@ -12,6 +12,7 @@ namespace Difane\Bundle\TwigDatabaseBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+use Twig\Source;
 
 class ValidTwigValidator extends ConstraintValidator
 {
@@ -28,7 +29,8 @@ class ValidTwigValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         try {
-            $this->twig->parse($this->twig->tokenize($value));
+            $source = new Source($value, '');
+            $this->twig->parse($this->twig->tokenize($source));
 
         } catch (\Twig_Error $e) {
             $this->context->addViolation($constraint->message, array('%line%' => $e->getTemplateLine()));
