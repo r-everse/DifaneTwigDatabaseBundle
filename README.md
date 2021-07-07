@@ -1,5 +1,8 @@
-DifaneTwigDatabaseBundle
-========================
+# Deprecation notice
+
+This package is deprecated and will soon be removed. Please consider forking it o creating a copy in your repository.
+
+## DifaneTwigDatabaseBundle
 
 Bundle that provides possibility to store twig templates in database in addition to filesystem and manage and edit them.
 
